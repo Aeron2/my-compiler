@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
+      "name": ".NET Core Launch (console)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/mc/bin/Debug/net9.0/mc.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/mc",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "integratedTerminal",
+      // "env": {
+      //   "PATH": "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin", // Example, adjust as needed
+      //   "DOTNET_ROOT": "/usr/local/share/dotnet", // Path to .NET SDK if necessary
+      //   "HOME": "/Users/dhruvaeron",
+      //   "terminal.integrated.shell.osx": "/bin/zsh"
+      // },
+      "stopAtEntry": false
+      // "justMyCode": true
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    }
+  ]
+}

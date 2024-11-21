@@ -1,0 +1,14 @@
+/Users/dhruvaeron/projects/my-compiler/mc/bin/Debug/net9.0/mc
+/Users/dhruvaeron/projects/my-compiler/mc/bin/Debug/net9.0/mc.deps.json
+/Users/dhruvaeron/projects/my-compiler/mc/bin/Debug/net9.0/mc.runtimeconfig.json
+/Users/dhruvaeron/projects/my-compiler/mc/bin/Debug/net9.0/mc.dll
+/Users/dhruvaeron/projects/my-compiler/mc/bin/Debug/net9.0/mc.pdb
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.GeneratedMSBuildEditorConfig.editorconfig
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.AssemblyInfoInputs.cache
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.AssemblyInfo.cs
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.csproj.CoreCompileInputs.cache
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.dll
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/refint/mc.dll
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.pdb
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.genruntimeconfig.cache
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/ref/mc.dll
