@@ -12,3 +12,4 @@
 /Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.pdb
 /Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.genruntimeconfig.cache
 /Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/ref/mc.dll
+/Users/dhruvaeron/projects/my-compiler/mc/obj/Debug/net9.0/mc.sourcelink.json
