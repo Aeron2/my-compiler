@@ -19,11 +19,24 @@ namespace mc
 
 
                 var parser = new Parser(line);
-                var expression = parser.Parse();
-             
+                var syntaxTree = parser.Parse();
 
-                PrettyPrint(expression);
 
+                PrettyPrint(syntaxTree.Root);
+
+                if (!parser.Diagnostics.Any())
+                {
+                    var e = new Evaluator(syntaxTree.Root);
+                    var result = e.Evaluate();
+                    Console.WriteLine(result);
+                }
+                else
+                {
+                    foreach (var diagnostics in parser.Diagnostics)
+
+                        Console.WriteLine(diagnostics);
+
+                }
 
                 // var lexer = new Lexer(line);
                 // while (true)
@@ -98,12 +111,17 @@ namespace mc
     }
     class Lexer
     {
+
         public readonly string _text;
         private int _position;
+
+        private readonly List<string> _diagnostics = [];
         public Lexer(string text)
         {
             _text = text;
         }
+        public IEnumerable<string> Diagnostics => _diagnostics;
+
         private char Current
         {
             get
@@ -132,7 +150,10 @@ namespace mc
                 }
                 var length = _position - start;
                 var text = _text.Substring(start, length);
-                int.TryParse(text, out var value);
+                if (!int.TryParse(text, out var value))
+                {
+                    _diagnostics.Add($"ERROR: The number {_text} is not a valid Int32");
+                }
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
             if (char.IsWhiteSpace(Current))
@@ -171,6 +192,7 @@ namespace mc
             {
                 return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", string.Empty);
             }
+            _diagnostics.Add($"ERROR: bad character input: '{Current}'");
             return new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), string.Empty);
         }
     }
@@ -222,11 +244,28 @@ namespace mc
         }
     }
 
-
+    sealed class SyntaxTree
+    {
+        public SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
+        {
+            Diagnostics = diagnostics;
+            Root = root;
+            EndOfFileToken = endOfFileToken;
+        }
+        public IEnumerable<string> Diagnostics { get; }
+        public ExpressionSyntax Root { get; }
+        public SyntaxToken EndOfFileToken { get; }
+    }
     class Parser
     {
         private readonly SyntaxToken[] _tokens;
         private int _position;
+
+        private List<string> _diagnostics = [];
+
+
+
+
         public Parser(string text)
         {
             var tokens = new List<SyntaxToken>();
@@ -240,13 +279,16 @@ namespace mc
             }
             while (token.Kind != SyntaxKind.EndOfFileToken);
             _tokens = [.. tokens];
+            _diagnostics.AddRange(lexer.Diagnostics);
 
         }
+        public IEnumerable<string> Diagnostics => _diagnostics;
         private SyntaxToken Peek(int offset)
         {
             var index = _position + offset;
             if (index >= _tokens.Length)
                 return _tokens[^1];
+            // _diagnostics.Add($"Error : Unexpected Token <{Current.Kind}>");
             return _tokens[index];
         }
         private SyntaxToken Current => Peek(0);
@@ -260,14 +302,22 @@ namespace mc
         {
             if (Current.Kind == kind)
                 return NextToken();
+            _diagnostics.Add($"Error : Unexpected Token <{Current.Kind}>, expected <{kind}>");
+
             return new SyntaxToken(kind, Current.Position, null, null);
         }
 
-        public ExpressionSyntax Parse()
+        public SyntaxTree Parse()
+        {
+            var expression = ParseExpression();
+            var endOfFileToken = Match(SyntaxKind.EndOfFileToken);
+            return new SyntaxTree(_diagnostics, expression, endOfFileToken);
+        }
+        private ExpressionSyntax ParseExpression()
         {
             var left = ParsePrimaryExpression();
             while (Current.Kind
-            == SyntaxKind.PlusToken || Current.Kind == SyntaxKind.MinusToken)
+            == SyntaxKind.PlusToken || Current.Kind == SyntaxKind.MinusToken || Current.Kind == SyntaxKind.StarToken || Current.Kind == SyntaxKind.SlashToken)
             {
                 var operatorToken = NextToken();
                 var right = ParsePrimaryExpression();
@@ -281,4 +331,42 @@ namespace mc
             return new NumberExpressionSyntax(NumberToken);
         }
     }
+    class Evaluator
+    {
+        public readonly ExpressionSyntax _root;
+        public Evaluator(ExpressionSyntax root)
+        {
+            _root = root;
+
+        }
+        public int Evaluate()
+        {
+            return EvaluateExpression(_root);
+        }
+
+        private int EvaluateExpression(ExpressionSyntax node)
+        {
+            // throw new NotImplementedException();
+            if (node is NumberExpressionSyntax n)
+                return (int)n.NumberToken.Value;
+            if (node is BinaryExpressionSyntax b)
+            {
+                var left = EvaluateExpression(b.Left);
+                var right = EvaluateExpression(b.Right);
+                if (b.OperatorToken.Kind == SyntaxKind.PlusToken)
+                    return left + right;
+                else if (b.OperatorToken.Kind == SyntaxKind.MinusToken)
+                    return left - right;
+                else if (b.OperatorToken.Kind == SyntaxKind.StarToken)
+                    return left * right;
+                else if (b.OperatorToken.Kind == SyntaxKind.SlashToken)
+                    return left / right;
+                else
+                    throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}");
+            }
+            throw new Exception($"Unexpected node{node.Kind}");
+
+        }
+    }
+
 }
